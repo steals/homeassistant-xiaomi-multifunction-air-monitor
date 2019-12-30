@@ -1,8 +1,0 @@
-{
-  "domain": "mi_air_quality_monitor_sensor",
-  "name": "XiaoMi Multifunction Air Monitor",
-  "documentation": "https://github.com/home-assistant/example-custom-config/tree/master/custom_components/example_sensor/",
-  "dependencies": [],
-  "codeowners": [],
-  "requirements": ["python-miio>=0.3.2"]
-}

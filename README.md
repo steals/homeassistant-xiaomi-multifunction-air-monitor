@@ -1,18 +1,29 @@
-# homeassistant-mi-air-quality-monitor
-XiaoMi Air Quality Monitor(PM2.5 sensor) component for Home Assistant.
+# homeassistant-xiaomi-multifunction-air-monitor
+XiaoMi Multifunction Air Monitor component for Home Assistant.
 
-![Screenshot](https://raw.githubusercontent.com/bit3725/homeassistant-mi-air-quality-monitor/master/images/screenshot.jpg)
+![Screenshot](https://raw.githubusercontent.com/ALERTua/homeassistant-xiaomi-multifunction-air-monitor/master/images/device_image.jpg)
+
+![Screenshot](https://raw.githubusercontent.com/ALERTua/homeassistant-xiaomi-multifunction-air-monitor/master/images/screenshot.jpg)
 
 ## Installation
-1. Copy *custom_components/sensor/mi_air_quality_moitor.py* to **.homeassistant/custom_components/sensor**.
+1. Copy *custom_components/sensor/mi_multifunction_air_quality_monitor.py* to **.homeassistant/custom_components/sensor**.
 2. Get the IP of your sensor.
 3. Follow [Retrieving the Access Token](https://home-assistant.io/components/vacuum.xiaomi_miio/#retrieving-the-access-token) guide to get the token of your sensor
 
 ## Configuration
 ```yaml
 sensor:
-  - platform: mi_air_quality_monitor
+  - platform: mi_multifunction_air_quality_monitor
     host: YOUR_SENSOR_IP
     token: YOUR_SENSOR_TOKEN
     name: YOUT_SENSOR_NAME
+    device_class: YOUR_DEVICE_CLASS
 ```
+Device class can be:
+- zhimi.airmonitor.v1
+- cgllc.airmonitor.b1
+- cgllc.airmonitor.s1
+
+Based on:
+- https://github.com/bit3725/homeassistant-mi-air-quality-monitor
+- https://github.com/rytilahti/python-miio
