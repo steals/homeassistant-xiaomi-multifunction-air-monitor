@@ -1,33 +1,37 @@
-"""Support for Xiaomi air quality monitor."""
+"""Support for XiaoMi Multifunction Air Monitor."""
 import logging
 
-from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, )
+from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, CONF_DEVICE_CLASS)
 from homeassistant.helpers.entity import Entity
 from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.translation import flatten
 
 _LOGGER = logging.getLogger(__name__)
 
 REQUIREMENTS = ['python-miio>=0.3.2']
 
+
 def setup_platform(hass, config, add_devices, discovery_info=None):
-    """Perform the setup for Xiaomi air quality monitor."""
+    """Perform the setup for XiaoMi Multifunction Air Monitor."""
     from miio import AirQualityMonitor, DeviceException
 
     host = config.get(CONF_HOST)
     name = config.get(CONF_NAME)
     token = config.get(CONF_TOKEN)
+    device_class = config.get(CONF_DEVICE_CLASS)
 
-    _LOGGER.info("Initializing Xiaomi air quality monitor with host %s (token %s...)", host, token[:5])
+    _LOGGER.info("Initializing Xiaomi Mi Multifunction Air Monitor with host %s (token %s...)", host, token[:5])
 
     devices = []
     try:
-        airQualityMonitor = AirQualityMonitor(host, token)
+        airQualityMonitor = AirQualityMonitor(host, token, model=device_class)
         airQualityMonitorSensor = XiaomiAirQualityMonitorSensor(airQualityMonitor, name)
         devices.append(airQualityMonitorSensor)
     except DeviceException:
         raise PlatformNotReady
 
     add_devices(devices)
+
 
 class XiaomiAirQualityMonitorSensor(Entity):
     """Representation of a XiaomiAirQualityMonitorSensor."""
@@ -57,22 +61,29 @@ class XiaomiAirQualityMonitorSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement of this entity, if any."""
-        return 'AQI'
+        return ''
 
     @property
     def device_state_attributes(self):
         """Return the state attributes of the last update."""
+        from miio.device import DeviceInfo
+        from miio.airqualitymonitor import AirQualityMonitorStatus
+        info = self._airQualityMonitor.info()  # type: DeviceInfo
+        status = self._airQualityMonitor.status()  # type: AirQualityMonitorStatus
         attrs = {}
-        attrs['Battery'] = '{}%'.format(self._airQualityMonitor.status().battery)
-        attrs['USB Power'] = 'On' if self._airQualityMonitor.status().usb_power else 'Off'
-
+        if info:
+            attrs.update(info.__dict__.get('data', {}))
+        if status:
+            attrs.update(status.__dict__.get('data', {}))
+        attrs = flatten(attrs)
         return attrs
 
     def parse_data(self):
+        from miio.device import DeviceException
         try:
-            self._state = self._airQualityMonitor.status().aqi
+            self._state = int(self._airQualityMonitor.status().temperature)
         except DeviceException:
-            _LOGGER.exception('Fail to get aqi from Xiaomi Air Quality Monitor')
+            _LOGGER.exception('Fail to get temperature from XiaoMi Multifunction Air Monitor')
             raise PlatformNotReady
 
     def update(self):
