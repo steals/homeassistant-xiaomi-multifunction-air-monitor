@@ -6,7 +6,7 @@ XiaoMi Multifunction Air Monitor component for Home Assistant.
 ![card](https://raw.githubusercontent.com/ALERTua/homeassistant-xiaomi-multifunction-air-monitor/master/images/card.png)
 
 ## Installation
-1. Copy *custom_components/sensor/mi_multifunction_air_quality_monitor.py* to **.homeassistant/custom_components/sensor**.
+1. Copy *custom_components* folder from this repositoty to your homeassistant *config* folder.
 2. Get the IP of your sensor.
 3. Follow [Retrieving the Access Token](https://home-assistant.io/components/vacuum.xiaomi_miio/#retrieving-the-access-token) guide to get the token of your sensor
 
@@ -16,8 +16,8 @@ sensor:
   - platform: mi_multifunction_air_quality_monitor
     host: YOUR_SENSOR_IP
     token: YOUR_SENSOR_TOKEN
-    name: YOUT_SENSOR_NAME
     device_class: YOUR_DEVICE_CLASS
+    name: YOUR_SENSOR_NAME
 ```
 Device class can be:
 - zhimi.airmonitor.v1

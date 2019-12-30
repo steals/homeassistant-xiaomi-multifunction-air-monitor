@@ -1,0 +1,6 @@
+{
+  "name": "XiaoMi Multifunction Air Monitor",
+  "content_in_root": false,
+  "domains": ["sensor"],
+  "homeassistant": "0.103.5"
+}
