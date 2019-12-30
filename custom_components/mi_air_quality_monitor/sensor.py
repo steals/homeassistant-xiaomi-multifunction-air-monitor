@@ -1,17 +1,36 @@
 """Support for XiaoMi Multifunction Air Monitor."""
 import logging
+from datetime import timedelta
 
-from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, CONF_DEVICE_CLASS)
-from homeassistant.helpers.entity import Entity
+import homeassistant.helpers.config_validation as cv
+import voluptuous as vol
+from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, CONF_DEVICE_CLASS, TEMP_CELSIUS)
 from homeassistant.exceptions import PlatformNotReady
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.translation import flatten
 
 _LOGGER = logging.getLogger(__name__)
 
-REQUIREMENTS = ['python-miio>=0.3.2']
+DEFAULT_NAME = "XiaoMi Multifunction Air Monitor"
+
+ICON = "mdi:cloud"
+
+SCAN_INTERVAL = timedelta(seconds=30)
+
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
+    {
+        vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
+        vol.Required(CONF_HOST): cv.string,
+        vol.Required(CONF_TOKEN): cv.string,
+        vol.Optional(CONF_DEVICE_CLASS): vol.All(
+            cv.string, vol.In(["zhimi.airmonitor.v1", "cgllc.airmonitor.b1", "cgllc.airmonitor.s1"])
+        ),
+    }
+)
 
 
-def setup_platform(hass, config, add_devices, discovery_info=None):
+def setup_platform(hass, config, add_entities, discovery_info=None):
     """Perform the setup for XiaoMi Multifunction Air Monitor."""
     from miio import AirQualityMonitor, DeviceException
 
@@ -22,15 +41,15 @@ def setup_platform(hass, config, add_devices, discovery_info=None):
 
     _LOGGER.info("Initializing Xiaomi Mi Multifunction Air Monitor with host %s (token %s...)", host, token[:5])
 
-    devices = []
+    entities = []
     try:
         airQualityMonitor = AirQualityMonitor(host, token, model=device_class)
         airQualityMonitorSensor = XiaomiAirQualityMonitorSensor(airQualityMonitor, name)
-        devices.append(airQualityMonitorSensor)
+        entities.append(airQualityMonitorSensor)
     except DeviceException:
         raise PlatformNotReady
 
-    add_devices(devices)
+    add_entities(entities)
 
 
 class XiaomiAirQualityMonitorSensor(Entity):
@@ -61,7 +80,7 @@ class XiaomiAirQualityMonitorSensor(Entity):
     @property
     def unit_of_measurement(self):
         """Return the unit of measurement of this entity, if any."""
-        return ''
+        return TEMP_CELSIUS
 
     @property
     def device_state_attributes(self):
