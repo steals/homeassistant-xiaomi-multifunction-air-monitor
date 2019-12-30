@@ -1,5 +1,5 @@
 {
-  "domain": "mi_multifunction_air_quality_monitor_sensor",
+  "domain": "mi_multifunction_air_quality_monitor",
   "name": "XiaoMi Multifunction Air Monitor",
   "documentation": "https://github.com/ALERTua/homeassistant-xiaomi-multifunction-air-monitor",
   "dependencies": [],
