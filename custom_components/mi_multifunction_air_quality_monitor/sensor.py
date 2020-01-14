@@ -102,7 +102,7 @@ class XiaomiAirQualityMonitorSensor(Entity):
         try:
             self._state = int(self._airQualityMonitor.status().temperature)
         except DeviceException:
-            _LOGGER.exception('Fail to get temperature from XiaoMi Multifunction Air Monitor')
+            _LOGGER.warning('Fail to get temperature from XiaoMi Multifunction Air Monitor')
             raise PlatformNotReady
 
     def update(self):
