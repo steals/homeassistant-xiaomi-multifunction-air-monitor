@@ -98,7 +98,7 @@ class XiaomiAirQualityMonitorSensor(Entity):
         return attrs
 
     def parse_data(self):
-        from miio.device import DeviceException
+        from miio import DeviceException
         try:
             self._state = int(self._airQualityMonitor.status().temperature)
         except DeviceException:
